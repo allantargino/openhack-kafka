@@ -1,8 +1,11 @@
 package com.targa.labs.dev.demokafka;
 
+import org.apache.avro.generic.GenericRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
+
+import allan.BadgeEvent;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -16,8 +19,8 @@ public class Receiver {
         return latch;
     }
 
-    @KafkaListener(topics = "badgesource")
-    public void receive(String payload) {
+    @KafkaListener(topics = "allan")
+    public void receive(GenericRecord payload) {
         LOGGER.info("received payload='{}'", payload);
         latch.countDown();
     }
