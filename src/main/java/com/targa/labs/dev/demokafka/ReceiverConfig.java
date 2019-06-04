@@ -22,48 +22,48 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@EnableKafka
+// @EnableKafka
 public class ReceiverConfig {
 
-    @Value("${kafka.bootstrap-servers}")
-    private String bootstrapServers;
+    // @Value("${kafka.bootstrap-servers}")
+    // private String bootstrapServers;
 
-    @Value("${kafka.schema-registry.url}")
-    private String schemaRegistryUrl;
+    // @Value("${kafka.schema-registry.url}")
+    // private String schemaRegistryUrl;
 
-    @Bean
-    public Map<String, Object> consumerConfigs() {
-        Map<String, Object> props = new HashMap<>();
-        // list of host:port pairs used for establishing the initial connections to the Kafka cluster
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        // allows a pool of processes to divide the work of consuming and processing records
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "openhack");
-        // automatically reset the offset to the earliest offset
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put("schema.registry.url", schemaRegistryUrl);
+    // @Bean
+    // public Map<String, Object> consumerConfigs() {
+    //     Map<String, Object> props = new HashMap<>();
+    //     // list of host:port pairs used for establishing the initial connections to the Kafka cluster
+    //     props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+    //     props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+    //     props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+    //     // allows a pool of processes to divide the work of consuming and processing records
+    //     props.put(ConsumerConfig.GROUP_ID_CONFIG, "openhack");
+    //     // automatically reset the offset to the earliest offset
+    //     props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+    //     // props.put("schema.registry.url", schemaRegistryUrl);
 
-        return props;
-    }
+    //     return props;
+    // }
 
-    @Bean
-    public ConsumerFactory<String, BadgeEvent> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs());
-    }
+    // @Bean
+    // public ConsumerFactory<String, String> consumerFactory() {
+    //     return new DefaultKafkaConsumerFactory<>(consumerConfigs());
+    // }
 
-    @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, BadgeEvent>> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, BadgeEvent> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
-        factory.getContainerProperties().setAckOnError(true);
+    // @Bean
+    // public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory() {
+    //     ConcurrentKafkaListenerContainerFactory<String, String> factory =
+    //             new ConcurrentKafkaListenerContainerFactory<>();
+    //     factory.setConsumerFactory(consumerFactory());
+    //     factory.getContainerProperties().setAckOnError(true);
 
-        return factory;
-    }
+    //     return factory;
+    // }
 
-    @Bean
-    public Receiver receiver() {
-        return new Receiver();
-    }
+    // @Bean
+    // public Receiver receiver() {
+    //     return new Receiver();
+    // }
 }

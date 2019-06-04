@@ -12,30 +12,32 @@ import badgeevent.BadgeEvent;
 public class Sender {
 
 	@Autowired
-	private KafkaTemplate<String, BadgeEvent> producer;
+	private KafkaTemplate<String, String> producer;
 
 	@Value("${kafka.topic.name}")
 	private String topicName;
 
-	public void sendMessage(BadgeEvent msg) {
+	public void sendMessage(String msg) {
 		producer.send(topicName, msg);
 	}
 
 	@GetMapping(value = "/event/{eventId}")
 	@ResponseStatus(value = HttpStatus.OK)
 	public @ResponseBody String getTestData(@PathVariable String eventId) {
-		BadgeEvent event = new BadgeEvent();
+		// BadgeEvent event = new BadgeEvent();
 		
-		event.setId(eventId);
-		event.setName("sampleName");
-		event.setDisplayName("sampleName");
-		event.setDownVotes(42);
-		event.setUserId("userId");
-		event.setUpVotes(13);
-		event.setReputation("good");
-		event.setProcessedDate("06/04/2019");
+		// event.setId(eventId);
+		// event.setName("sampleName");
+		// event.setDisplayName("sampleName");
+		// event.setDownVotes(42);
+		// event.setUserId("userId");
+		// event.setUpVotes(13);
+		// event.setReputation("good");
+		// event.setProcessedDate("06/04/2019");
 
-		sendMessage(event);
+		// sendMessage(event);
+
+		sendMessage(eventId);
 
 		return "Ok";
 	}

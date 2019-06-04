@@ -25,17 +25,17 @@ public class SenderConfig {
     private String schemaRegistryUrl;
 
     @Bean
-    public ProducerFactory<String, BadgeEvent> producerFactory() {
+    public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-        configProps.put("schema.registry.url", schemaRegistryUrl);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        // configProps.put("schema.registry.url", schemaRegistryUrl);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
  
     @Bean
-    public KafkaTemplate<String, BadgeEvent> kafkaTemplate() {
+    public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

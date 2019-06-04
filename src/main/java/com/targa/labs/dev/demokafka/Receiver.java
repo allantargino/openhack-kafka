@@ -11,17 +11,17 @@ import java.util.concurrent.CountDownLatch;
 
 public class Receiver {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Receiver.class);
+    // private static final Logger LOGGER = LoggerFactory.getLogger(Receiver.class);
 
-    private CountDownLatch latch = new CountDownLatch(1);
+    // private CountDownLatch latch = new CountDownLatch(1);
 
-    public CountDownLatch getLatch() {
-        return latch;
-    }
+    // public CountDownLatch getLatch() {
+    //     return latch;
+    // }
 
-    @KafkaListener(topics = "allan")
-    public void receive(GenericRecord payload) {
-        LOGGER.info("received payload='{}'", payload);
-        latch.countDown();
-    }
+    // @KafkaListener(topics = "allan-stream")
+    // public void receive(String payload) {
+    //     LOGGER.info("received payload='{}'", payload);
+    //     latch.countDown();
+    // }
 }
