@@ -1,11 +1,11 @@
 package com.targa.labs.dev.demokafka;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+
+import com.google.gson.Gson;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
@@ -14,16 +14,12 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
-import org.apache.kafka.streams.kstream.Produced;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class DemoKafkaApplication {
 
-    // @Value("${kafka.bootstrap-servers}")
     private static String bootstrapServers = "40.114.45.150:31090";
 
     public static void main(String[] args) {
@@ -60,6 +56,11 @@ public class DemoKafkaApplication {
                 List<KeyValue<String, String>> result = new LinkedList<>();
                 result.add(KeyValue.pair(key, value.toUpperCase()));
                 // result.add(KeyValue.pair(value.toLowerCase(), "9000"));
+
+                Gson gson = new Gson();
+                Post post = gson.fromJson(value, Post.class);
+                
+
                 return result;
             })
         .to("allan-stream-output");
