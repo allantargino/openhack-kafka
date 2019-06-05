@@ -8,7 +8,6 @@ public class DemoKafkaApplication {
 
     public static void main(String[] args) {
         StreamProvider provider = new StreamProvider("40.114.45.150:31090");
-        // StreamerBuilder builder = new StreamerBuilder(provider);
 
         List<Streamer<?>> streamers = Arrays.asList(
             new Streamer<>(provider, "post", "post-output", Post.class),
