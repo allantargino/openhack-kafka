@@ -1,5 +1,5 @@
-/home/joni/streamexamples/src/main/java/myapps/WordCount.java
-/home/joni/streamexamples/src/main/java/myapps/ConnectionHelper.java
-/home/joni/streamexamples/src/main/java/myapps/LineSplit.java
-/home/joni/streamexamples/src/main/java/myapps/Post.java
-/home/joni/streamexamples/src/main/java/myapps/Pipe.java
+/home/lawrence/source/hacks/openhackkafka/openhack-kafka/streams/src/main/java/myapps/ConnectionHelper.java
+/home/lawrence/source/hacks/openhackkafka/openhack-kafka/streams/src/main/java/myapps/Pipe.java
+/home/lawrence/source/hacks/openhackkafka/openhack-kafka/streams/src/main/java/myapps/WordCount.java
+/home/lawrence/source/hacks/openhackkafka/openhack-kafka/streams/src/main/java/myapps/Post.java
+/home/lawrence/source/hacks/openhackkafka/openhack-kafka/streams/src/main/java/myapps/LineSplit.java

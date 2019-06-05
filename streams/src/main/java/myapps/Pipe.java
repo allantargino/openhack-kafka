@@ -10,12 +10,19 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.SessionWindows;
+import org.apache.kafka.streams.state.SessionStore;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -35,39 +42,21 @@ public class Pipe {
         Gson g = new Gson();
 
         builder.stream("post").flatMapValues(value -> {
+            System.out.println("Got event");
+            return Arrays.asList(g.fromJson(value.toString(), Post.class).getOwnerUserId());
+        }).groupBy((key, value) -> {
+            System.out.println("Grouped event");
+            return value;
+        }).windowedBy(SessionWindows.with(Duration.ofSeconds(15)))
+        .count(Materialized.<String, Long, SessionStore<Bytes, byte[]>>as("PLAY_EVENTS_PER_SESSION")
+                .withKeySerde(Serdes.String())
+                .withValueSerde(Serdes.Long()))
+        .toStream()
+        .map((key, value) -> {
+            System.out.println(key + " " +value);
+            return new KeyValue<>(key.key() + "@" + key.window().start() + "->" + key.window().end(), value);
+        });
 
-            String val = value.toString();
-
-            // validate is json
-            Post p = g.fromJson(val, Post.class);
-
-            // post to function
-            try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-                HttpPost httpPost = new HttpPost("https://ohkl-kp0.azurewebsites.net/api/KeyPhraseFunc");
-                StringEntity entity = new StringEntity(val);
-                httpPost.setEntity(entity);
-                httpPost.setHeader("Accept", "application/json");
-                httpPost.setHeader("Content-type", "application/json");
-
-                try (CloseableHttpResponse res = httpclient.execute(httpPost)) {
-                    if (res.getStatusLine().getStatusCode() > 299) {
-                        throw new Exception("error response from function");
-                    }
-
-                    HttpEntity body = res.getEntity();
-                    String jsonString = EntityUtils.toString(body);
-
-                    System.out.println("Enriched: " + jsonString);
-
-                    return Arrays.asList(jsonString);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return Arrays.asList("");
-        }).to("events2");
-        
         final Topology topology = builder.build();
         final KafkaStreams streams = new KafkaStreams(topology, props);
         final CountDownLatch latch = new CountDownLatch(1);
