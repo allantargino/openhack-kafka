@@ -26,6 +26,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 
@@ -41,24 +42,17 @@ public class Pipe {
         final StreamsBuilder builder = new StreamsBuilder();
         Gson g = new Gson();
 
-        builder.stream("post").flatMapValues(value -> {
-            System.out.println("Got event");
+        KTable<String, Long> table = builder.stream("post").flatMapValues(value -> {
+            // System.out.println("Got event");
             return Arrays.asList(g.fromJson(value.toString(), Post.class).getOwnerUserId());
         }).groupBy((key, value) -> {
-            System.out.println("Grouped event");
+            // System.out.println("Grouped event");
             return value;
-        }).windowedBy(SessionWindows.with(Duration.ofSeconds(15)))
-        .count(Materialized.<String, Long, SessionStore<Bytes, byte[]>>as("PLAY_EVENTS_PER_SESSION")
-                .withKeySerde(Serdes.String())
-                .withValueSerde(Serdes.Long()))
-        .toStream()
-        .map((key, value) -> {
-            System.out.println(key + " " +value);
-            return new KeyValue<>(key.key() + "@" + key.window().start() + "->" + key.window().end(), value);
-        });
+        }).count();
 
         final Topology topology = builder.build();
         final KafkaStreams streams = new KafkaStreams(topology, props);
+
         final CountDownLatch latch = new CountDownLatch(1);
 
         // attach shutdown handler to catch control-c
@@ -72,7 +66,20 @@ public class Pipe {
 
         try {
             streams.start();
-            latch.await();
+
+            System.out.println("Stream started");
+
+            while (true) {
+
+                table.toStream().map((key, value) -> {
+                    System.out.println("Found Item in table" + key);
+
+                    return new KeyValue<String, Long>(key, value);
+                });
+            }
+
+            // latch.await();
+
         } catch (Throwable e) {
             System.exit(1);
         }
