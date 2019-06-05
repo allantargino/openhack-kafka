@@ -1,9 +1,13 @@
-package com.targa.labs.dev.demokafka;
+package com.stream;
 
-public class Post {
+/**
+ * Vote
+ */
+public class Vote {
     private String Id;
-    private String Body;
-    private String OwnerUserId;
+    private String EventId;
+    private String PostId;
+    private String VoteTypeId;
     private String Type;
     private String CreatedAt;
   
@@ -14,12 +18,16 @@ public class Post {
       return Id;
     }
   
-    public String getBody() {
-      return Body;
+    public String getEventId() {
+      return EventId;
     }
   
-    public String getOwnerUserId() {
-      return OwnerUserId;
+    public String getPostId() {
+      return PostId;
+    }
+  
+    public String getVoteTypeId() {
+      return VoteTypeId;
     }
   
     public String getType() {
@@ -36,12 +44,16 @@ public class Post {
       this.Id = Id;
     }
   
-    public void setBody( String Body ) {
-      this.Body = Body;
+    public void setEventId( String EventId ) {
+      this.EventId = EventId;
     }
   
-    public void setOwnerUserId( String OwnerUserId ) {
-      this.OwnerUserId = OwnerUserId;
+    public void setPostId( String PostId ) {
+      this.PostId = PostId;
+    }
+  
+    public void setVoteTypeId( String VoteTypeId ) {
+      this.VoteTypeId = VoteTypeId;
     }
   
     public void setType( String Type ) {
